@@ -10,6 +10,9 @@ class Profile(models.Model):
     bio = models.TextField(blank=True)
     link = models.URLField(blank=True)
 
+    def __str__(self) -> str:
+        return self.username
+
 class InventoryItem(models.Model):
     '''model for an item in the user's inventory (e.g. yarn, needle, hook, stuffing)'''
     ITEM_TYPES = [
@@ -21,6 +24,10 @@ class InventoryItem(models.Model):
     name = models.TextField(blank=False)
     item_type = models.CharField(max_length=20, choices=ITEM_TYPES)
     description = models.TextField(blank=True)
+    image = models.ImageField(blank=True)
+
+    def __str__(self) -> str:
+        return self.name
 
 class Pattern(models.Model):
     DIFFICULTY_TYPES = [
