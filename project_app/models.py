@@ -44,7 +44,7 @@ class Pattern(models.Model):
     image = models.ImageField(blank=True)
 
     def __str__(self) -> str:
-        return str(self.name) + " Pattern"
+        return str(self.name) + ' Pattern'
 
 class PatternImage(models.Model):
     '''images for patterns'''
@@ -52,6 +52,56 @@ class PatternImage(models.Model):
     image = models.ImageField(blank=True)
 
     def __str__(self) -> str:
-        return str(self.pattern) + " image"
+        return str(self.pattern) + ' image'
 
+class Post(models.Model):
+    '''posts'''
+    profile = models.ForeignKey('Profile', on_delete=models.CASCADE)
+    image = models.ImageField(blank=True)
+    pattern = models.ForeignKey('Pattern', blank=True, null=True, on_delete=models.CASCADE)
+    caption = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self) -> str:
+        return str(self.profile) + 's post'
+
+class SavedPattern(models.Model):
+    '''saved patterns'''
+    pattern = models.ForeignKey('Pattern', on_delete=models.CASCADE)
+    profile = models.ForeignKey('Profile', on_delete=models.CASCADE)
+    
+    def __str__(self) -> str:
+        return str(self.profile) + ' saved ' + str(self.pattern)
+
+class SavedPost(models.Model):
+    '''saved posts'''
+    post = models.ForeignKey('Post', on_delete=models.CASCADE)
+    profile = models.ForeignKey('Profile', on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return str(self.profile) + ' saved ' + str(self.post)
+    
+class Like(models.Model):
+    '''likes on posts'''
+    post = models.ForeignKey('Post', on_delete=models.CASCADE)
+    profile = models.ForeignKey('Profile', on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return str(self.profile) + ' likes ' + str(self.post)
+
+class Comment(models.Model):
+    '''comments on posts'''
+    post = models.ForeignKey('Post', on_delete=models.CASCADE)
+    profile = models.ForeignKey('Profile', on_delete=models.CASCADE)
+    comment = models.TextField(blank=True)
+
+    def __str__(self) -> str:
+        return str(self.profile) + ' commented on ' + str(self.post)
+
+class Follow(models.Model):
+    '''a following relationship'''
+    follower = models.ForeignKey('Profile', on_delete=models.CASCADE,related_name='follower')
+    following = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='following')
+
+    def __str__(self) -> str:
+        return str(self.follower) + ' follows ' + str(self.following)
