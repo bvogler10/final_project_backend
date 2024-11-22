@@ -3,10 +3,10 @@ from django.db import models
 # Create your models here.
 class Profile(models.Model):
     '''model for a user profile'''
-    email = models.TextField(blank=False)
-    username = models.TextField(blank=False)
-    first = models.TextField(blank=False)
-    last = models.TextField(blank=False)
+    email = models.EmailField(blank=False)
+    username = models.CharField(blank=False, max_length=50)
+    first = models.CharField(blank=False, max_length=50)
+    last = models.CharField(blank=False, max_length=50)
     bio = models.TextField(blank=True)
     link = models.URLField(blank=True)
 
@@ -21,7 +21,7 @@ class InventoryItem(models.Model):
         ('other', 'Other'),
     ]
     profile = models.ForeignKey('Profile', on_delete=models.CASCADE)
-    name = models.TextField(blank=False)
+    name = models.CharField(blank=False, max_length=100)
     item_type = models.CharField(max_length=20, choices=ITEM_TYPES)
     description = models.TextField(blank=True)
     image = models.ImageField(blank=True)
@@ -37,15 +37,21 @@ class Pattern(models.Model):
         ('advanced', 'Advanced'),
         ('expert', 'Expert'),
     ]
-    name = models.TextField(blank=False)
+    name = models.CharField(blank=False, max_length=75)
     creator = models.ForeignKey('Profile', on_delete=models.CASCADE)
     difficulty = models.CharField(max_length=20, choices=DIFFICULTY_TYPES)
     description = models.TextField(blank=False)
-    image = models.ImageField
+    image = models.ImageField(blank=True)
 
-class Project(models.Model):
-    profile = models.ForeignKey('Profile', on_delete=models.CASCADE)
-    pattern = models.ForeignKey('Pattern', on_delete=models.CASCADE, blank=True)
-    name = models.TextField(blank=False)
-    notes = models.TextField(blank=True)
+    def __str__(self) -> str:
+        return str(self.name) + " Pattern"
+
+class PatternImage(models.Model):
+    '''images for patterns'''
+    pattern = models.ForeignKey('Pattern', on_delete=models.CASCADE)
+    image = models.ImageField(blank=True)
+
+    def __str__(self) -> str:
+        return str(self.pattern) + " image"
+
 
