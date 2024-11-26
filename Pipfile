@@ -5,6 +5,11 @@ name = "pypi"
 
 [packages]
 django = "*"
+djangorestframework = "*"
+djangorestframework-simplejwt = "*"
+django-allauth = "*"
+dj-rest-auth = "*"
+django-cors-headers = "*"
 
 [dev-packages]
 

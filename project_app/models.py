@@ -33,11 +33,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(blank=False, max_length=50)
     bio = models.TextField(blank=True)
     link = models.URLField(blank=True)
-    avatar = models.ImageField(blank=True)
+    avatar = models.ImageField(blank=True, upload_to='uploads/avatars')
 
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
+
+    date_joined = models.DateTimeField(auto_now_add=True)
+    last_login = models.DateTimeField(blank=True, null=True)
 
     objects = CustomUserManager()
 
@@ -89,13 +92,16 @@ class PatternImage(models.Model):
 class Post(models.Model):
     '''posts'''
     user = models.ForeignKey('User', on_delete=models.CASCADE)
-    image = models.ImageField(blank=True)
+    image = models.ImageField(blank=True, upload_to='uploads/posts')
     pattern = models.ForeignKey('Pattern', blank=True, null=True, on_delete=models.CASCADE)
     caption = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
         return str(self.user) + 's post'
+    
+    def image_url(self):
+        return f'{settings.WEBSITE_URL}{self.image.url}'
 
 class SavedPattern(models.Model):
     '''saved patterns'''
