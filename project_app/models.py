@@ -59,7 +59,7 @@ class InventoryItem(models.Model):
     name = models.CharField(blank=False, max_length=100)
     item_type = models.CharField(max_length=20, choices=ITEM_TYPES)
     description = models.TextField(blank=True)
-    image = models.ImageField(blank=True)
+    image = models.ImageField(blank=True, upload_to='uploads/inventory')
 
     def __str__(self) -> str:
         return self.name
@@ -76,7 +76,7 @@ class Pattern(models.Model):
     creator = models.ForeignKey('User', on_delete=models.CASCADE)
     difficulty = models.CharField(max_length=20, choices=DIFFICULTY_TYPES)
     description = models.TextField(blank=False)
-    image = models.ImageField(blank=True)
+    image = models.ImageField(blank=True, upload_to='uploads/patterns')
 
     def __str__(self) -> str:
         return str(self.name) + ' Pattern'
@@ -84,7 +84,7 @@ class Pattern(models.Model):
 class PatternImage(models.Model):
     '''images for patterns'''
     pattern = models.ForeignKey('Pattern', on_delete=models.CASCADE)
-    image = models.ImageField(blank=True)
+    image = models.ImageField(blank=True, upload_to='uploads/patterns')
 
     def __str__(self) -> str:
         return str(self.pattern) + ' image'
