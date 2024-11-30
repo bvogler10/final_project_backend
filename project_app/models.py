@@ -91,6 +91,7 @@ class PatternImage(models.Model):
 
 class Post(models.Model):
     '''posts'''
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey('User', on_delete=models.CASCADE)
     image = models.ImageField(blank=True, upload_to='uploads/posts')
     pattern = models.ForeignKey('Pattern', blank=True, null=True, on_delete=models.CASCADE)
