@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "2d554d35a67db005df57879aefe340647a7ace09cb651e860e5558543b879520"
+            "sha256": "5b2f80aa9c415aa66a273394a135e580fa58164c9c001807589124b4802583fd"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -78,11 +78,20 @@
         },
         "pyjwt": {
             "hashes": [
-                "sha256:543b77207db656de204372350926bed5a86201c4cbff159f623f79c7bb487a15",
-                "sha256:7628a7eb7938959ac1b26e819a1df0fd3259505627b575e4bad6d08f76db695c"
+                "sha256:3cc5772eb20009233caf06e9d8a0577824723b44e6648ee0a2aedb6cf9381953",
+                "sha256:dcdd193e30abefd5debf142f9adfcdd2b58004e644f25406ffaebd50bd98dacb"
             ],
             "markers": "python_version >= '3.9'",
-            "version": "==2.10.0"
+            "version": "==2.10.1"
+        },
+        "rest-framework-simplejwt": {
+            "hashes": [
+                "sha256:035187ce5380e18e8b966610a89b6460fb4b73cd179979343888fb190328125d",
+                "sha256:620c56826ff4791c4aaa730ec52aed1f4c74b9c20ea15b9fc1a39bdf99a29a30"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.0'",
+            "version": "==0.0.2"
         },
         "sqlparse": {
             "hashes": [

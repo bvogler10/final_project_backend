@@ -64,6 +64,8 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:3000',
 ]
 
+CORS_ALLOW_ALL_ORIGINS = True
+
 REST_AUTH = {
     'USE_JWT': True,
     'JWT_AUTH_HTTPONLY': False,
@@ -80,17 +82,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'project_app',
-
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
-
     'allauth',
     'allauth.account',
-
     'dj_rest_auth',
     'dj_rest_auth.registration',
-
     'corsheaders',
 ]
 
