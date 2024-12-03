@@ -4,6 +4,7 @@ from .models import Post, User
 from dj_rest_auth.registration.serializers import RegisterSerializer
 
 
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -32,3 +33,27 @@ class PostListSerializer(serializers.ModelSerializer):
             'caption',
             'pattern',
         ]
+
+class PostCreateSerializer(serializers.ModelSerializer):
+    user = serializers.UUIDField(write_only=True)
+
+    class Meta:
+        model = Post
+        fields = [
+            'user', 
+            'image', 
+            'caption',
+        ]
+
+    def create(self, validated_data):
+        print('validated_data:', validated_data)
+        user_uuid = validated_data.pop('user')
+        try:
+            user = User.objects.get(id=user_uuid)
+            print("user:", user)
+            # user_info = UserSerializer(source=user,read_only=True)
+            return Post.objects.create(user=user, **validated_data)
+        except User.DoesNotExist:
+            raise serializers.ValidationError({"user_uuid": "Invalid user UUID."})
+        
+        

@@ -8,7 +8,8 @@ from rest_framework_simplejwt.views import TokenVerifyView
 from project_app.views.auth_views import CustomRegisterView
 
 urlpatterns = [
-    path('posts', api.post_list, name='api_post_list'),
+    path('posts', api.get_all_posts, name='api_all_post_list'),
+    path('posts/create_post', api.create_post, name='api_create_post'),
     path('auth/register/', CustomRegisterView.as_view(), name='rest_register'),
     path('auth/login/', LoginView.as_view(), name='rest_login'),
     path('auth/logout/', LogoutView.as_view(), name='rest_logout'),
