@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Post, User
+from .models import Post, User, InventoryItem
 from dj_rest_auth.registration.serializers import RegisterSerializer
 
 
@@ -32,6 +32,17 @@ class PostListSerializer(serializers.ModelSerializer):
             'created_at',
             'caption',
             'pattern',
+        ]
+        
+class InventoryListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InventoryItem
+        fields = [
+            'id',
+            'image_url',
+            'description',
+            'item_type',
+            'name',
         ]
 
 class PostCreateSerializer(serializers.ModelSerializer):

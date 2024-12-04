@@ -4,9 +4,11 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework import status
+from django.shortcuts import get_object_or_404
 
-from .models import Post
-from .serializers import PostListSerializer, PostCreateSerializer, UserSerializer
+
+from .models import Post, InventoryItem, User
+from .serializers import PostListSerializer, PostCreateSerializer, UserSerializer, InventoryListSerializer
 
 @api_view(['GET'])
 @authentication_classes([])
@@ -14,6 +16,36 @@ from .serializers import PostListSerializer, PostCreateSerializer, UserSerialize
 def get_all_posts(request):
     posts = Post.objects.all().order_by('-created_at')
     serializer = PostListSerializer(posts, many=True)
+    return JsonResponse({
+        'data': serializer.data
+    })
+
+@api_view(['GET'])
+@authentication_classes([])
+@permission_classes([AllowAny])
+def get_user_posts(request, user_id):
+    posts = Post.objects.filter(user=user_id).order_by('-created_at')
+    serializer = PostListSerializer(posts, many=True)
+    return JsonResponse({
+        'data': serializer.data
+    })
+
+@api_view(['GET'])
+@authentication_classes([])
+@permission_classes([AllowAny])
+def get_user_by_id(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    serializer = UserSerializer(user)
+    return JsonResponse({
+        'data': serializer.data
+    })
+
+@api_view(['GET'])
+@authentication_classes([])
+@permission_classes([AllowAny])
+def get_inventory(request, user_id):
+    items = InventoryItem.objects.filter(user=user_id).order_by('item_type')
+    serializer = InventoryListSerializer(items, many=True)
     return JsonResponse({
         'data': serializer.data
     })

@@ -55,6 +55,8 @@ class InventoryItem(models.Model):
         ('hook_needle', 'Hook/Needles'),
         ('other', 'Other'),
     ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey('User', on_delete=models.CASCADE)
     name = models.CharField(blank=False, max_length=100)
     item_type = models.CharField(max_length=20, choices=ITEM_TYPES)
@@ -63,6 +65,9 @@ class InventoryItem(models.Model):
 
     def __str__(self) -> str:
         return self.name
+    
+    def image_url(self):
+        return f'{settings.WEBSITE_URL}{self.image.url}'
 
 class Pattern(models.Model):
     DIFFICULTY_TYPES = [
@@ -72,6 +77,7 @@ class Pattern(models.Model):
         ('advanced', 'Advanced'),
         ('expert', 'Expert'),
     ]
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(blank=False, max_length=75)
     creator = models.ForeignKey('User', on_delete=models.CASCADE)
     difficulty = models.CharField(max_length=20, choices=DIFFICULTY_TYPES)
@@ -83,6 +89,7 @@ class Pattern(models.Model):
 
 class PatternImage(models.Model):
     '''images for patterns'''
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     pattern = models.ForeignKey('Pattern', on_delete=models.CASCADE)
     image = models.ImageField(blank=True, upload_to='uploads/patterns')
 
@@ -106,6 +113,7 @@ class Post(models.Model):
 
 class SavedPattern(models.Model):
     '''saved patterns'''
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     pattern = models.ForeignKey('Pattern', on_delete=models.CASCADE)
     user = models.ForeignKey('User', on_delete=models.CASCADE)
     
@@ -114,6 +122,7 @@ class SavedPattern(models.Model):
 
 class SavedPost(models.Model):
     '''saved posts'''
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     post = models.ForeignKey('Post', on_delete=models.CASCADE)
     user = models.ForeignKey('User', on_delete=models.CASCADE)
 
@@ -122,6 +131,7 @@ class SavedPost(models.Model):
     
 class Like(models.Model):
     '''likes on posts'''
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     post = models.ForeignKey('Post', on_delete=models.CASCADE)
     user = models.ForeignKey('User', on_delete=models.CASCADE)
 
@@ -130,6 +140,7 @@ class Like(models.Model):
 
 class Comment(models.Model):
     '''comments on posts'''
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)    
     post = models.ForeignKey('Post', on_delete=models.CASCADE)
     user = models.ForeignKey('User', on_delete=models.CASCADE)
     comment = models.TextField(blank=True)
@@ -139,6 +150,7 @@ class Comment(models.Model):
 
 class Follow(models.Model):
     '''a following relationship'''
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)   
     follower = models.ForeignKey('User', on_delete=models.CASCADE,related_name='follower')
     following = models.ForeignKey('User', on_delete=models.CASCADE, related_name='following')
 
