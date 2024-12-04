@@ -109,7 +109,7 @@ class Post(models.Model):
         return str(self.user) + 's post'
     
     def image_url(self):
-        return f'{settings.WEBSITE_URL}{self.image.url}'
+        return f'{settings.WEBSITE_URL}{self.image.url}' if self.image else ""
 
 class SavedPattern(models.Model):
     '''saved patterns'''

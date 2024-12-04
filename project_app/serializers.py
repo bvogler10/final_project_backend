@@ -33,7 +33,6 @@ class PostListSerializer(serializers.ModelSerializer):
             'caption',
             'pattern',
         ]
-        
 class InventoryListSerializer(serializers.ModelSerializer):
     class Meta:
         model = InventoryItem

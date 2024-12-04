@@ -60,11 +60,12 @@ def create_post(request):
     print('serializer:', serializer)
     if serializer.is_valid():
         post = serializer.save()
+        print(post)
         return JsonResponse({
             "message": "Post created successfully!",
             "post": {
                 "id": str(post.id),
-                "image": post.image_url(),
+                "image": post.image_url() if post.image else "",
                 "pattern": post.pattern,
                 "caption": post.caption,
                 "created_at": post.created_at
