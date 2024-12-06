@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 
 
 from .models import Post, InventoryItem, User
-from .serializers import PostListSerializer, PostCreateSerializer, UserSerializer, InventoryListSerializer
+from .serializers import PostListSerializer, PostCreateSerializer, UserSerializer, InventoryListSerializer, UserPartialUpdateSerializer
 
 @api_view(['GET'])
 @authentication_classes([])
@@ -50,14 +50,41 @@ def get_inventory(request, user_id):
         'data': serializer.data
     })
 
+@api_view(['PUT'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([])
+def update_user(request):
+    user = request.user
+    print('PUT REQUEST', user, flush=True)
+
+    if not user.is_authenticated:
+        return JsonResponse({"error": "you must be authenticated to perform this"})
+    
+    avatar = request.FILES.get('avatar')
+    link = request.data.get('link')
+    bio = request.data.get('bio')
+    
+    # Update the profile picture if it was provided
+    if avatar:
+        user.avatar = avatar   
+    if bio:
+        user.bio = bio
+    if link:
+        user.link = link
+
+    user.save()
+    serializer = UserSerializer(user)
+    return JsonResponse({'data': serializer.data})
+
 @api_view(['POST'])
 @authentication_classes([JWTAuthentication])
 @permission_classes([])
 def create_post(request):
-    print(request.data)
-
+    user = request.user
+    if not user.is_authenticated:
+        return JsonResponse({"error": "you must be authenticated to perform this"})
+    
     serializer = PostCreateSerializer(data=request.data)
-    print('serializer:', serializer)
     if serializer.is_valid():
         post = serializer.save()
         print(post)

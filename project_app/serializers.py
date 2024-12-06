@@ -2,13 +2,20 @@ from rest_framework import serializers
 
 from .models import Post, User, InventoryItem
 from dj_rest_auth.registration.serializers import RegisterSerializer
+from django.conf import settings
 
 
 
 class UserSerializer(serializers.ModelSerializer):
+    avatar = serializers.SerializerMethodField() 
     class Meta:
         model = User
         fields = '__all__'
+
+    def get_avatar(self, obj):
+        if obj.avatar:
+            return f"{settings.WEBSITE_URL}{obj.avatar.url}"
+        return None
 
 
 class CustomRegisterSerializer(RegisterSerializer):
@@ -65,5 +72,9 @@ class PostCreateSerializer(serializers.ModelSerializer):
             return Post.objects.create(user=user, **validated_data)
         except User.DoesNotExist:
             raise serializers.ValidationError({"user_uuid": "Invalid user UUID."})
-        
+
+class UserPartialUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['avatar', 'link', 'bio']
         
