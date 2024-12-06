@@ -67,10 +67,8 @@ def update_user(request):
     # Update the profile picture if it was provided
     if avatar:
         user.avatar = avatar   
-    if bio:
-        user.bio = bio
-    if link:
-        user.link = link
+    user.bio = bio
+    user.link = link
 
     user.save()
     serializer = UserSerializer(user)
