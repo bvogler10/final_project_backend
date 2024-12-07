@@ -69,7 +69,7 @@ class InventoryItem(models.Model):
         return self.name
     
     def image_url(self):
-        return f'{settings.WEBSITE_URL}{self.image.url}'
+        return f'{settings.WEBSITE_URL}{self.image.url}' if self.image else ""
 
 class Pattern(models.Model):
     DIFFICULTY_TYPES = [
@@ -90,15 +90,9 @@ class Pattern(models.Model):
 
     def __str__(self) -> str:
         return str(self.name) + ' Pattern'
-
-class PatternImage(models.Model):
-    '''images for patterns'''
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    pattern = models.ForeignKey('Pattern', on_delete=models.CASCADE)
-    image = models.ImageField(blank=True, upload_to='uploads/patterns')
-
-    def __str__(self) -> str:
-        return str(self.pattern) + ' image'
+    
+    def image_url(self):
+        return f'{settings.WEBSITE_URL}{self.image.url}' if self.image else ""
 
 class Post(models.Model):
     '''posts'''

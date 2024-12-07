@@ -7,8 +7,8 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404
 
 
-from .models import Post, InventoryItem, User
-from .serializers import PostListSerializer, PostCreateSerializer, UserSerializer, InventoryListSerializer, UserPartialUpdateSerializer, InventoryCreateSerializer
+from .models import Post, InventoryItem, User, Pattern
+from .serializers import PostListSerializer, PostCreateSerializer, UserSerializer, InventoryListSerializer, UserPartialUpdateSerializer, InventoryCreateSerializer, PatternListSerializer
 
 @api_view(['GET'])
 @authentication_classes([])
@@ -16,6 +16,16 @@ from .serializers import PostListSerializer, PostCreateSerializer, UserSerialize
 def get_all_posts(request):
     posts = Post.objects.all().order_by('-created_at')
     serializer = PostListSerializer(posts, many=True)
+    return JsonResponse({
+        'data': serializer.data
+    })
+
+@api_view(['GET'])
+@authentication_classes([])
+@permission_classes([AllowAny])
+def get_all_patterns(request):
+    posts = Pattern.objects.all().order_by('-created_at')
+    serializer = PatternListSerializer(posts, many=True)
     return JsonResponse({
         'data': serializer.data
     })

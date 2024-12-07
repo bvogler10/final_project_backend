@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Post, User, InventoryItem
+from .models import Post, User, InventoryItem, Pattern
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from django.conf import settings
 
@@ -40,6 +40,20 @@ class PostListSerializer(serializers.ModelSerializer):
             'caption',
             'pattern',
         ]
+
+class PatternListSerializer(serializers.ModelSerializer):
+    user_info = UserSerializer(source='creator',read_only=True)
+    class Meta:
+        model = Pattern
+        fields = [
+            'id',
+            'user_info',
+            'difficulty',
+            'name',
+            'created_at',
+            'image_url',
+        ]
+
 class InventoryListSerializer(serializers.ModelSerializer):
     class Meta:
         model = InventoryItem
