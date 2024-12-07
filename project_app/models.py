@@ -62,6 +62,8 @@ class InventoryItem(models.Model):
     item_type = models.CharField(max_length=20, choices=ITEM_TYPES)
     description = models.TextField(blank=True)
     image = models.ImageField(blank=True, upload_to='uploads/inventory')
+    created_at = models.DateTimeField(auto_now=True)
+
 
     def __str__(self) -> str:
         return self.name
@@ -83,6 +85,8 @@ class Pattern(models.Model):
     difficulty = models.CharField(max_length=20, choices=DIFFICULTY_TYPES)
     description = models.TextField(blank=False)
     image = models.ImageField(blank=True, upload_to='uploads/patterns')
+    created_at = models.DateTimeField(auto_now=True)
+
 
     def __str__(self) -> str:
         return str(self.name) + ' Pattern'

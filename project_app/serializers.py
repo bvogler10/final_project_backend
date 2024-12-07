@@ -73,6 +73,28 @@ class PostCreateSerializer(serializers.ModelSerializer):
         except User.DoesNotExist:
             raise serializers.ValidationError({"user_uuid": "Invalid user UUID."})
 
+class InventoryCreateSerializer(serializers.ModelSerializer):
+    user = serializers.UUIDField(write_only=True)
+
+    class Meta:
+        model = InventoryItem
+        fields = [
+            'user', 
+            'name', 
+            'description',
+            'image',
+            'item_type'
+        ]
+
+    def create(self, validated_data):
+        print('validated_data:', validated_data)
+        user_uuid = validated_data.pop('user')
+        try:
+            user = User.objects.get(id=user_uuid)
+            return InventoryItem.objects.create(user=user, **validated_data)
+        except User.DoesNotExist:
+            raise serializers.ValidationError({"user_uuid": "Invalid user UUID."})
+
 class UserPartialUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 
 
 from .models import Post, InventoryItem, User
-from .serializers import PostListSerializer, PostCreateSerializer, UserSerializer, InventoryListSerializer, UserPartialUpdateSerializer
+from .serializers import PostListSerializer, PostCreateSerializer, UserSerializer, InventoryListSerializer, UserPartialUpdateSerializer, InventoryCreateSerializer
 
 @api_view(['GET'])
 @authentication_classes([])
@@ -44,7 +44,7 @@ def get_user_by_id(request, user_id):
 @authentication_classes([])
 @permission_classes([AllowAny])
 def get_inventory(request, user_id):
-    items = InventoryItem.objects.filter(user=user_id).order_by('item_type')
+    items = InventoryItem.objects.filter(user=user_id).order_by('created_at', 'item_type')
     serializer = InventoryListSerializer(items, many=True)
     return JsonResponse({
         'data': serializer.data
@@ -95,5 +95,22 @@ def create_post(request):
                 "caption": post.caption,
                 "created_at": post.created_at
             }
+        }, status=status.HTTP_201_CREATED)
+    return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([])
+def create_inventory_item(request, user_id):
+    user = request.user
+    if not user.is_authenticated:
+        return JsonResponse({"error": "you must be authenticated to perform this"})
+    
+    serializer = InventoryCreateSerializer(data=request.data)
+    if serializer.is_valid():
+        post = serializer.save()
+        print(post)
+        return JsonResponse({
+            "message": "Post created successfully!",
         }, status=status.HTTP_201_CREATED)
     return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
