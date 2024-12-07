@@ -21,6 +21,17 @@ def get_all_posts(request):
     })
 
 @api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([])
+def get_all_but_user_posts(request):
+    user = request.user
+    posts = Post.objects.exclude(user=user).order_by('-created_at')
+    serializer = PostListSerializer(posts, many=True)
+    return JsonResponse({
+        'data': serializer.data
+    })
+
+@api_view(['GET'])
 @authentication_classes([])
 @permission_classes([AllowAny])
 def get_all_patterns(request):

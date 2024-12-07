@@ -10,6 +10,7 @@ from project_app.views.auth_views import CustomRegisterView
 urlpatterns = [
     path('posts', api.get_all_posts, name='api_all_post_list'),
     path('posts/create_post', api.create_post, name='api_create_post'),
+    path('posts/exclude_user', api.get_all_but_user_posts, name='api_exclude_user_posts'),
 
     path('patterns', api.get_all_patterns, name='api_create_post'),
 
