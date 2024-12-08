@@ -161,6 +161,24 @@ class FollowCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"detail": "You are already following this user."})
 
         return Follow.objects.create(**validated_data)
+    
+class FollowerListSerializer(serializers.ModelSerializer):
+    follow_info = UserSerializer(source='follower',read_only=True)
 
+    class Meta:
+        model = Follow
+        fields = [
+            'id',
+            'follow_info',
+        ]
+class FollowingListSerializer(serializers.ModelSerializer):
+    follow_info = UserSerializer(source='following',read_only=True)
+
+    class Meta:
+        model = Follow
+        fields = [
+            'id',
+            'follow_info',
+        ]
 
         

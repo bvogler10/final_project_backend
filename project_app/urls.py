@@ -24,6 +24,8 @@ urlpatterns = [
     path('user_patterns/<str:user_id>', api.get_user_patterns, name='api_user_pattern_list'),
     path('update_user', api.update_user, name='update_user'),
     path('user/follow/<str:other_id>', api.create_follow, name='follow_user'),
+    path('user/<str:user_id>/following', api.get_user_following, name='user_following'),
+    path('user/<str:user_id>/followers', api.get_user_followers, name='user_followers'),
 
     path('inventory/<str:user_id>', api.get_inventory, name='user_inventory'),
     path('inventory/create_inventory/<str:user_id>', api.create_inventory_item, name='create_inventory_item'),

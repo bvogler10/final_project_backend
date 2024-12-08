@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 
 
 from .models import Post, InventoryItem, User, Pattern, Follow
-from .serializers import PostListSerializer, PostCreateSerializer, UserSerializer, InventoryListSerializer, InventoryCreateSerializer, PatternListSerializer, PatternCreateSerializer, FollowCreateSerializer
+from .serializers import PostListSerializer, PostCreateSerializer, UserSerializer, InventoryListSerializer, InventoryCreateSerializer, PatternListSerializer, PatternCreateSerializer, FollowCreateSerializer, FollowerListSerializer, FollowingListSerializer
 
 #------POST GET VIEWS-------
 @api_view(['GET'])
@@ -203,6 +203,37 @@ def get_user_patterns(request, user_id):
     return JsonResponse({
         'data': serializer.data
     })
+
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([])
+def get_user_followers(request, user_id):
+    user = request.user
+
+    if not user.is_authenticated:
+        return JsonResponse({"error": "you must be authenticated to perform this"})
+    
+    follows = Follow.objects.filter(following=user.id)
+    serializer = FollowerListSerializer(follows, many=True)
+    return JsonResponse({
+        'data': serializer.data
+    })
+
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([])
+def get_user_following(request, user_id):
+    user = request.user
+
+    if not user.is_authenticated:
+        return JsonResponse({"error": "you must be authenticated to perform this"})
+    
+    follows = Follow.objects.filter(follower=user.id)
+    serializer = FollowingListSerializer(follows, many=True)
+    return JsonResponse({
+        'data': serializer.data
+    })
+
 
 @api_view(['PUT'])
 @authentication_classes([JWTAuthentication])
