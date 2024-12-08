@@ -56,6 +56,7 @@ class PatternListSerializer(serializers.ModelSerializer):
         ]
 
 class InventoryListSerializer(serializers.ModelSerializer):
+    user_info = UserSerializer(source='user',read_only=True)
     class Meta:
         model = InventoryItem
         fields = [
@@ -63,6 +64,7 @@ class InventoryListSerializer(serializers.ModelSerializer):
             'image_url',
             'description',
             'item_type',
+            'user_info',
             'name',
         ]
 

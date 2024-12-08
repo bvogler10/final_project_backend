@@ -152,3 +152,16 @@ def create_pattern(request, user_id):
             "message": "Pattern created successfully!",
         }, status=status.HTTP_201_CREATED)
     return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['DELETE'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([])
+def delete_inventory_item(request, inventory_id):
+    user = request.user
+    if not user.is_authenticated:
+        return JsonResponse({"error": "you must be authenticated to perform this"})
+    
+    item = get_object_or_404(InventoryItem, id=inventory_id)
+    item.delete()
+    return JsonResponse({"message": "item successfully deleted"})
