@@ -11,6 +11,8 @@ urlpatterns = [
     path('posts', api.get_all_posts, name='api_all_post_list'),
     path('posts/create_post', api.create_post, name='api_create_post'),
     path('posts/exclude_user', api.get_all_but_user_posts, name='api_exclude_user_posts'),
+    path('posts/following', api.get_following_posts, name='api_user_following_posts'),
+    path('posts/explore', api.get_explore_posts, name='api_user_explore_posts'),
 
     path('patterns/create_pattern/<str:user_id>', api.create_pattern, name='api_create_pattern'),
     path('patterns/', api.get_all_patterns, name='api_get_pattern'),
@@ -18,6 +20,7 @@ urlpatterns = [
     path('user/<str:user_id>', api.get_user_by_id, name='api_user_info'),
     path('user_posts/<str:user_id>', api.get_user_posts, name='api_user_post_list'),
     path('update_user', api.update_user, name='update_user'),
+    path('user/follow/<str:other_id>', api.create_follow, name='follow_user'),
 
     path('inventory/<str:user_id>', api.get_inventory, name='user_inventory'),
     path('inventory/create_inventory/<str:user_id>', api.create_inventory_item, name='create_inventory_item'),
