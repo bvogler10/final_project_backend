@@ -175,14 +175,9 @@ def get_user_by_id(request, user_id):
     })
 
 @api_view(['GET'])
-@authentication_classes([JWTAuthentication])
-@permission_classes([])
+@authentication_classes([])
+@permission_classes([AllowAny])
 def get_user_posts(request, user_id):
-    user = request.user
-
-    if not user.is_authenticated:
-        return JsonResponse({"error": "you must be authenticated to perform this"})
-    
     posts = Post.objects.filter(user=user_id).order_by('-created_at')
     serializer = PostListSerializer(posts, many=True)
     return JsonResponse({
@@ -190,14 +185,9 @@ def get_user_posts(request, user_id):
     })
 
 @api_view(['GET'])
-@authentication_classes([JWTAuthentication])
-@permission_classes([])
+@authentication_classes([])
+@permission_classes([AllowAny])
 def get_user_patterns(request, user_id):
-    user = request.user
-
-    if not user.is_authenticated:
-        return JsonResponse({"error": "you must be authenticated to perform this"})
-    
     patterns = Pattern.objects.filter(creator=user_id).order_by('-created_at')
     serializer = PatternListSerializer(patterns, many=True)
     return JsonResponse({
@@ -205,35 +195,25 @@ def get_user_patterns(request, user_id):
     })
 
 @api_view(['GET'])
-@authentication_classes([JWTAuthentication])
-@permission_classes([])
+@authentication_classes([])
+@permission_classes([AllowAny])
 def get_user_followers(request, user_id):
-    user = request.user
-
-    if not user.is_authenticated:
-        return JsonResponse({"error": "you must be authenticated to perform this"})
     
-    follows = Follow.objects.filter(following=user.id)
+    follows = Follow.objects.filter(following=user_id)
     serializer = FollowerListSerializer(follows, many=True)
     return JsonResponse({
         'data': serializer.data
     })
 
 @api_view(['GET'])
-@authentication_classes([JWTAuthentication])
-@permission_classes([])
+@authentication_classes([])
+@permission_classes([AllowAny])
 def get_user_following(request, user_id):
-    user = request.user
-
-    if not user.is_authenticated:
-        return JsonResponse({"error": "you must be authenticated to perform this"})
-    
-    follows = Follow.objects.filter(follower=user.id)
+    follows = Follow.objects.filter(follower=user_id)
     serializer = FollowingListSerializer(follows, many=True)
     return JsonResponse({
         'data': serializer.data
     })
-
 
 @api_view(['PUT'])
 @authentication_classes([JWTAuthentication])
