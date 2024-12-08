@@ -16,9 +16,12 @@ urlpatterns = [
 
     path('patterns/create_pattern/<str:user_id>', api.create_pattern, name='api_create_pattern'),
     path('patterns/', api.get_all_patterns, name='api_get_pattern'),
+    path('patterns/following', api.get_following_patterns, name='api_user_following_patterns'),
+    path('patterns/explore', api.get_explore_patterns, name='api_user_explore_patterns'),
 
     path('user/<str:user_id>', api.get_user_by_id, name='api_user_info'),
     path('user_posts/<str:user_id>', api.get_user_posts, name='api_user_post_list'),
+    path('user_patterns/<str:user_id>', api.get_user_patterns, name='api_user_pattern_list'),
     path('update_user', api.update_user, name='update_user'),
     path('user/follow/<str:other_id>', api.create_follow, name='follow_user'),
 

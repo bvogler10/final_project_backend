@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404
 from .models import Post, InventoryItem, User, Pattern, Follow
 from .serializers import PostListSerializer, PostCreateSerializer, UserSerializer, InventoryListSerializer, InventoryCreateSerializer, PatternListSerializer, PatternCreateSerializer, FollowCreateSerializer
 
+#------POST GET VIEWS-------
 @api_view(['GET'])
 @authentication_classes([])
 @permission_classes([AllowAny])
@@ -69,6 +70,33 @@ def get_explore_posts(request):
         'data': serializer.data
     })
 
+@api_view(['POST'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([])
+def create_post(request):
+    user = request.user
+    if not user.is_authenticated:
+        return JsonResponse({"error": "you must be authenticated to perform this"})
+    
+    serializer = PostCreateSerializer(data=request.data)
+    if serializer.is_valid():
+        post = serializer.save()
+        print(post)
+        return JsonResponse({
+            "message": "Post created successfully!",
+            "post": {
+                "id": str(post.id),
+                "image": post.image_url() if post.image else "",
+                "pattern": post.pattern,
+                "caption": post.caption,
+                "created_at": post.created_at
+            }
+        }, status=status.HTTP_201_CREATED)
+    return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+#-----PATTERN GET VIEWS-------
 @api_view(['GET'])
 @authentication_classes([])
 @permission_classes([AllowAny])
@@ -80,15 +108,62 @@ def get_all_patterns(request):
     })
 
 @api_view(['GET'])
-@authentication_classes([])
-@permission_classes([AllowAny])
-def get_user_posts(request, user_id):
-    posts = Post.objects.filter(user=user_id).order_by('-created_at')
-    serializer = PostListSerializer(posts, many=True)
+@authentication_classes([JWTAuthentication])
+@permission_classes([])
+def get_following_patterns(request):
+    user = request.user
+    if not user.is_authenticated:
+        return JsonResponse({"error": "Authentication is required"}, status=401)
+    
+    following_users = Follow.objects.filter(follower=user).values_list('following', flat=True)
+    patterns = Pattern.objects.filter(creator__in=following_users).order_by('-created_at')
+
+    serializer = PatternListSerializer(patterns, many=True)
     return JsonResponse({
         'data': serializer.data
     })
 
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([])
+def get_explore_patterns(request):
+    user = request.user
+    if not user.is_authenticated:
+        return JsonResponse({"error": "Authentication is required"}, status=401)
+    
+    # Filter patterns based on the following relationships
+    following_users = Follow.objects.filter(follower=user).values_list('following', flat=True)
+    
+    # Exclude the patterns by the current user and the users that the user is following
+    patterns = Pattern.objects.exclude(creator=user)  # Exclude patterns from the user
+    patterns = patterns.exclude(creator__in=following_users)  # Exclude patterns from users that the current user is following
+    patterns = patterns.order_by('-created_at')
+    
+    serializer = PatternListSerializer(patterns, many=True)
+    return JsonResponse({
+        'data': serializer.data
+    })
+
+@api_view(['POST'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([])
+def create_pattern(request, user_id):
+    user = request.user
+    if not user.is_authenticated:
+        return JsonResponse({"error": "you must be authenticated to perform this"})
+    
+    serializer = PatternCreateSerializer(data=request.data)
+    if serializer.is_valid():
+        post = serializer.save()
+        print(post)
+        return JsonResponse({
+            "message": "Pattern created successfully!",
+        }, status=status.HTTP_201_CREATED)
+    return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+#-------USER VIEWS---------
 @api_view(['GET'])
 @authentication_classes([])
 @permission_classes([AllowAny])
@@ -100,11 +175,31 @@ def get_user_by_id(request, user_id):
     })
 
 @api_view(['GET'])
-@authentication_classes([])
-@permission_classes([AllowAny])
-def get_inventory(request, user_id):
-    items = InventoryItem.objects.filter(user=user_id).order_by('created_at', 'item_type')
-    serializer = InventoryListSerializer(items, many=True)
+@authentication_classes([JWTAuthentication])
+@permission_classes([])
+def get_user_posts(request, user_id):
+    user = request.user
+
+    if not user.is_authenticated:
+        return JsonResponse({"error": "you must be authenticated to perform this"})
+    
+    posts = Post.objects.filter(user=user_id).order_by('-created_at')
+    serializer = PostListSerializer(posts, many=True)
+    return JsonResponse({
+        'data': serializer.data
+    })
+
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([])
+def get_user_patterns(request, user_id):
+    user = request.user
+
+    if not user.is_authenticated:
+        return JsonResponse({"error": "you must be authenticated to perform this"})
+    
+    patterns = Pattern.objects.filter(creator=user_id).order_by('-created_at')
+    serializer = PatternListSerializer(patterns, many=True)
     return JsonResponse({
         'data': serializer.data
     })
@@ -136,47 +231,6 @@ def update_user(request):
 @api_view(['POST'])
 @authentication_classes([JWTAuthentication])
 @permission_classes([])
-def create_post(request):
-    user = request.user
-    if not user.is_authenticated:
-        return JsonResponse({"error": "you must be authenticated to perform this"})
-    
-    serializer = PostCreateSerializer(data=request.data)
-    if serializer.is_valid():
-        post = serializer.save()
-        print(post)
-        return JsonResponse({
-            "message": "Post created successfully!",
-            "post": {
-                "id": str(post.id),
-                "image": post.image_url() if post.image else "",
-                "pattern": post.pattern,
-                "caption": post.caption,
-                "created_at": post.created_at
-            }
-        }, status=status.HTTP_201_CREATED)
-    return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['POST'])
-@authentication_classes([JWTAuthentication])
-@permission_classes([])
-def create_inventory_item(request, user_id):
-    user = request.user
-    if not user.is_authenticated:
-        return JsonResponse({"error": "you must be authenticated to perform this"})
-    
-    serializer = InventoryCreateSerializer(data=request.data)
-    if serializer.is_valid():
-        post = serializer.save()
-        print(post)
-        return JsonResponse({
-            "message": "Item created successfully!",
-        }, status=status.HTTP_201_CREATED)
-    return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['POST'])
-@authentication_classes([JWTAuthentication])
-@permission_classes([])
 def create_follow(request, other_id):
     user = request.user
     print(user)
@@ -202,23 +256,35 @@ def create_follow(request, other_id):
     
     return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+#--------INVENTORY VIEWS-------
+@api_view(['GET'])
+@authentication_classes([])
+@permission_classes([AllowAny])
+def get_inventory(request, user_id):
+    items = InventoryItem.objects.filter(user=user_id).order_by('created_at', 'item_type')
+    serializer = InventoryListSerializer(items, many=True)
+    return JsonResponse({
+        'data': serializer.data
+    })
+
 @api_view(['POST'])
 @authentication_classes([JWTAuthentication])
 @permission_classes([])
-def create_pattern(request, user_id):
+def create_inventory_item(request, user_id):
     user = request.user
     if not user.is_authenticated:
         return JsonResponse({"error": "you must be authenticated to perform this"})
     
-    serializer = PatternCreateSerializer(data=request.data)
+    serializer = InventoryCreateSerializer(data=request.data)
     if serializer.is_valid():
         post = serializer.save()
         print(post)
         return JsonResponse({
-            "message": "Pattern created successfully!",
+            "message": "Item created successfully!",
         }, status=status.HTTP_201_CREATED)
     return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 @api_view(['DELETE'])
 @authentication_classes([JWTAuthentication])
