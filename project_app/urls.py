@@ -12,7 +12,8 @@ urlpatterns = [
     path('posts/create_post', api.create_post, name='api_create_post'),
     path('posts/exclude_user', api.get_all_but_user_posts, name='api_exclude_user_posts'),
 
-    path('patterns', api.get_all_patterns, name='api_create_post'),
+    path('patterns/create_pattern/<str:user_id>', api.create_pattern, name='api_create_pattern'),
+    path('patterns/', api.get_all_patterns, name='api_get_pattern'),
 
     path('user/<str:user_id>', api.get_user_by_id, name='api_user_info'),
     path('user_posts/<str:user_id>', api.get_user_posts, name='api_user_post_list'),

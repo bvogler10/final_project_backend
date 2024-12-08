@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 
 
 from .models import Post, InventoryItem, User, Pattern
-from .serializers import PostListSerializer, PostCreateSerializer, UserSerializer, InventoryListSerializer, UserPartialUpdateSerializer, InventoryCreateSerializer, PatternListSerializer
+from .serializers import PostListSerializer, PostCreateSerializer, UserSerializer, InventoryListSerializer, InventoryCreateSerializer, PatternListSerializer, PatternCreateSerializer
 
 @api_view(['GET'])
 @authentication_classes([])
@@ -132,6 +132,23 @@ def create_inventory_item(request, user_id):
         post = serializer.save()
         print(post)
         return JsonResponse({
-            "message": "Post created successfully!",
+            "message": "Item created successfully!",
+        }, status=status.HTTP_201_CREATED)
+    return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([])
+def create_pattern(request, user_id):
+    user = request.user
+    if not user.is_authenticated:
+        return JsonResponse({"error": "you must be authenticated to perform this"})
+    
+    serializer = PatternCreateSerializer(data=request.data)
+    if serializer.is_valid():
+        post = serializer.save()
+        print(post)
+        return JsonResponse({
+            "message": "Pattern created successfully!",
         }, status=status.HTTP_201_CREATED)
     return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

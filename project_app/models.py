@@ -84,7 +84,7 @@ class Pattern(models.Model):
     creator = models.ForeignKey('User', on_delete=models.CASCADE)
     difficulty = models.CharField(max_length=20, choices=DIFFICULTY_TYPES)
     description = models.TextField(blank=False)
-    image = models.ImageField(blank=True, upload_to='uploads/patterns')
+    image = models.ImageField(blank=False, upload_to='uploads/patterns')
     created_at = models.DateTimeField(auto_now=True)
 
 

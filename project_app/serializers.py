@@ -42,14 +42,15 @@ class PostListSerializer(serializers.ModelSerializer):
         ]
 
 class PatternListSerializer(serializers.ModelSerializer):
-    user_info = UserSerializer(source='creator',read_only=True)
+    creator_info = UserSerializer(source='creator',read_only=True)
     class Meta:
         model = Pattern
         fields = [
             'id',
-            'user_info',
+            'creator_info',
             'difficulty',
             'name',
+            'description',
             'created_at',
             'image_url',
         ]
@@ -108,9 +109,26 @@ class InventoryCreateSerializer(serializers.ModelSerializer):
             return InventoryItem.objects.create(user=user, **validated_data)
         except User.DoesNotExist:
             raise serializers.ValidationError({"user_uuid": "Invalid user UUID."})
+        
+class PatternCreateSerializer(serializers.ModelSerializer):
+    creator = serializers.UUIDField(write_only=True)
 
-class UserPartialUpdateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ['avatar', 'link', 'bio']
+        model = Pattern
+        fields = [
+            'creator', 
+            'name', 
+            'description',
+            'image',
+            'difficulty'
+        ]
+
+    def create(self, validated_data):
+        print('validated_data:', validated_data)
+        user_uuid = validated_data.pop('creator')
+        try:
+            user = User.objects.get(id=user_uuid)
+            return Pattern.objects.create(creator=user, **validated_data)
+        except User.DoesNotExist:
+            raise serializers.ValidationError({"user_uuid": "Invalid user UUID."})
         
