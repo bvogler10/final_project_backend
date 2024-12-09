@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-op7l*l!n*w#+hm#lb++c+^4phf0rrkljf(n_)=)3-f)%3(&x5t
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['https://closeknit-backend-74fd3b290357.herokuapp.com/']
 
 AUTH_USER_MODEL = 'project_app.User'
 
