@@ -18,6 +18,8 @@ urlpatterns = [
     path('patterns/', api.get_all_patterns, name='api_get_pattern'),
     path('patterns/following', api.get_following_patterns, name='api_user_following_patterns'),
     path('patterns/explore', api.get_explore_patterns, name='api_user_explore_patterns'),
+    path('patterns/exclude_user', api.get_all_but_user_patterns, name='api_exclude_user_patterns'),
+    path('patterns/search_patterns/', api.get_patterns_with_search, name='api_get_patterns_with_search'),
 
     path('user/<str:user_id>', api.get_user_by_id, name='api_user_info'),
     path('user_posts/<str:user_id>', api.get_user_posts, name='api_user_post_list'),

@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework import status
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 
 from .models import Post, InventoryItem, User, Pattern, Follow
@@ -110,6 +111,17 @@ def get_all_patterns(request):
 @api_view(['GET'])
 @authentication_classes([JWTAuthentication])
 @permission_classes([])
+def get_all_but_user_patterns(request):
+    user = request.user
+    posts = Post.objects.exclude(user=user).order_by('-created_at')
+    serializer = PostListSerializer(posts, many=True)
+    return JsonResponse({
+        'data': serializer.data
+    })
+
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([])
 def get_following_patterns(request):
     user = request.user
     if not user.is_authenticated:
@@ -160,6 +172,32 @@ def create_pattern(request, user_id):
             "message": "Pattern created successfully!",
         }, status=status.HTTP_201_CREATED)
     return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([]) 
+def get_patterns_with_search(request):
+    user = request.user 
+    if not user.is_authenticated:
+        return JsonResponse({"error": "you must be authenticated to perform this"})
+    
+    search_query = request.GET.get('search_query', None)
+    # Start with all patterns
+    patterns = Pattern.objects.all()
+    # Exclude user's own patterns
+    patterns = patterns.exclude(creator=user)
+    
+    if search_query:
+        patterns = patterns.filter(
+            Q(name__icontains=search_query) | Q(description__icontains=search_query)
+        )
+
+    # Order by difficulty
+    patterns = patterns.order_by('difficulty')
+    
+    serializer = PatternListSerializer(patterns, many=True)
+    return JsonResponse({'data': serializer.data})
 
 
 
