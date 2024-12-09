@@ -199,6 +199,16 @@ def get_patterns_with_search(request):
     serializer = PatternListSerializer(patterns, many=True)
     return JsonResponse({'data': serializer.data})
 
+@api_view(['GET'])
+@authentication_classes([])
+@permission_classes([AllowAny])
+def get_pattern_by_id(request, pattern_id):
+    pattern = get_object_or_404(Pattern, id=pattern_id)
+    serializer = PatternListSerializer(pattern)
+    return JsonResponse({
+        'data': serializer.data
+    })
+
 
 
 #-------USER VIEWS---------

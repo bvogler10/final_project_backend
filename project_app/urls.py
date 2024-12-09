@@ -16,6 +16,8 @@ urlpatterns = [
 
     path('patterns/create_pattern/<str:user_id>', api.create_pattern, name='api_create_pattern'),
     path('patterns/', api.get_all_patterns, name='api_get_pattern'),
+    path('pattern/<str:pattern_id>', api.get_pattern_by_id, name='api_pattern_info'),
+
     path('patterns/following', api.get_following_patterns, name='api_user_following_patterns'),
     path('patterns/explore', api.get_explore_patterns, name='api_user_explore_patterns'),
     path('patterns/exclude_user', api.get_all_but_user_patterns, name='api_exclude_user_patterns'),
