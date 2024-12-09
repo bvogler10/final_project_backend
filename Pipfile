@@ -12,6 +12,7 @@ dj-rest-auth = "*"
 django-cors-headers = "*"
 rest-framework-simplejwt = "*"
 requests = "*"
+gunicorn = "*"
 
 [dev-packages]
 
