@@ -65,6 +65,8 @@ REST_FRAMEWORK = {
 CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:8000',
     'http://127.0.0.1:3000',
+    'http://closeknit-backend-74fd3b290357.herokuapp.com',
+    'https://closeknit-frontend-afb30879e87b.herokuapp.com'
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
