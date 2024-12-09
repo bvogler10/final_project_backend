@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-op7l*l!n*w#+hm#lb++c+^4phf0rrkljf(n_)=)3-f)%3(&x5t'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['closeknit-backend-74fd3b290357.herokuapp.com', '127.0.0.1']
 
@@ -32,7 +32,10 @@ AUTH_USER_MODEL = 'project_app.User'
 
 SITE_ID = 1
 
-WEBSITE_URL = 'http://localhost:8000'
+if DEBUG == True:
+    WEBSITE_URL = 'http://localhost:8000'
+else:
+    WEBSITE_URL = 'http://closeknit-backend-74fd3b290357.herokuapp.com'
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
