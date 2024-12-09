@@ -32,7 +32,7 @@ AUTH_USER_MODEL = 'project_app.User'
 
 SITE_ID = 1
 
-if DEBUG == True:
+if DEBUG == False:
     WEBSITE_URL = 'http://localhost:8000'
 else:
     WEBSITE_URL = 'http://closeknit-backend-74fd3b290357.herokuapp.com'
