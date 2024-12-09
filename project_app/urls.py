@@ -21,6 +21,7 @@ urlpatterns = [
     path('patterns/exclude_user', api.get_all_but_user_patterns, name='api_exclude_user_patterns'),
     path('patterns/search_patterns/', api.get_patterns_with_search, name='api_get_patterns_with_search'),
 
+    path('users/', api.search_users, name='api_search_user'),
     path('user/<str:user_id>', api.get_user_by_id, name='api_user_info'),
     path('user_posts/<str:user_id>', api.get_user_posts, name='api_user_post_list'),
     path('user_patterns/<str:user_id>', api.get_user_patterns, name='api_user_pattern_list'),

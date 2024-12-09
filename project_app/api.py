@@ -305,6 +305,28 @@ def create_follow(request, other_id):
     
     return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([]) 
+def search_users(request):
+    user = request.user 
+    if not user.is_authenticated:
+        return JsonResponse({"error": "you must be authenticated to perform this"})
+    
+    search_query = request.GET.get('search_query', None)
+    # Start with all patterns
+    users = User.objects.all()
+    # Exclude self
+    users = users.exclude(id=user.id)
+    
+    if search_query:
+        users = users.filter(
+            Q(name__icontains=search_query) | Q(username__icontains=search_query)
+        )
+    
+    serializer = UserSerializer(users, many=True)
+    return JsonResponse({'data': serializer.data})
+
 
 
 #--------INVENTORY VIEWS-------
