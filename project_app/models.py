@@ -6,7 +6,9 @@ from django.db import models
 
 # Create your models here.
 class CustomUserManager(UserManager):
+    '''a custom manager for user operations (using email for login, custom permissions, etc.)'''
     def _create_user(self, name, email, password, **extra_fields):
+        '''carries out the actual creation of a user object based on its parameters'''
         if not email:
             raise ValueError("You have not specified a valid email address")
         
@@ -17,16 +19,19 @@ class CustomUserManager(UserManager):
 
         return user
     def create_user(self, name=None, email=None, password=None, **extra_fields):
+        '''creates a regular user'''
         extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
         return self._create_user(name, email, password, **extra_fields)
 
     def create_superuser(self, name=None, email=None, password=None, **extra_fields):
+        '''creates a superuser'''
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         return self._create_user(name, email, password, **extra_fields)
 
 class User(AbstractBaseUser, PermissionsMixin):
+    '''a custom user class connecting user model with authentication (setting correct permissions and required fields for login)'''
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True)
     name = models.CharField(max_length=255, blank=True, null=True)
@@ -69,6 +74,7 @@ class InventoryItem(models.Model):
         return self.name
     
     def image_url(self):
+        '''a function to return a url for the image of the object'''
         return f'{settings.WEBSITE_URL}{self.image.url}' if self.image else ""
 
 class Pattern(models.Model):
@@ -92,6 +98,7 @@ class Pattern(models.Model):
         return str(self.name) + ' Pattern'
     
     def image_url(self):
+        '''a function to return a url for the image of the object'''
         return f'{settings.WEBSITE_URL}{self.image.url}' if self.image else ""
 
 class Post(models.Model):
@@ -107,6 +114,7 @@ class Post(models.Model):
         return str(self.user) + 's post'
     
     def image_url(self):
+        '''a function to return a url for the image of the object'''
         return f'{settings.WEBSITE_URL}{self.image.url}' if self.image else ""
 
 class SavedPattern(models.Model):
