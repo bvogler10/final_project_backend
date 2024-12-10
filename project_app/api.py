@@ -1,3 +1,7 @@
+# File: api.py
+# Author: Brinja Vogler (bvogler@bu.edu)
+# Description: a file containing all of the api views used for fetching data from the database (called by urls from the frontend)
+
 from django.http import JsonResponse
 
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
@@ -51,7 +55,7 @@ def get_following_posts(request):
     # Filter posts by fetching following and retrieving only posts by users in the following list
     following_users = Follow.objects.filter(follower=user).values_list('following', flat=True)
     posts = Post.objects.filter(Q(user__in=following_users) | Q(user=user)).order_by('-created_at')
-    
+
     #serialize and send response
     serializer = PostListSerializer(posts, many=True)
     return JsonResponse({

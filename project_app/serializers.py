@@ -1,3 +1,7 @@
+# File: models.py
+# Author: Brinja Vogler (bvogler@bu.edu)
+# Description: a file containing all models used in the database (and some extra for future development)
+
 from rest_framework import serializers
 
 from .models import Post, User, InventoryItem, Pattern, Follow

@@ -1,3 +1,7 @@
+# File: urls.py
+# Author: Brinja Vogler (bvogler@bu.edu)
+# Description: a file containing all urls to call the api views for data fetching
+
 from django.urls import path
 from . import api
 
